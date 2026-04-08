@@ -1,9 +1,10 @@
 {
   "applicationId": "js.neutralino.zero",
   "version": "1.0.0",
-  "defaultMode": "window",
+  "defaultMode": "chrome",
   "documentRoot": "/ui/dist/",
   "url": "/",
+  "port": 3000,
   "enableServer": true,
   "enableNativeAPI": true,
   "tokenSecurity": "one-time",
@@ -33,7 +34,7 @@
     "resourcesPath": "/ui/dist/",
     "extensionsPath": "/extensions/",
     "frontendLibrary": {
-      "patchFile": "/mercury-ui-react/public/index.html",
+      "patchFile": "/ui/index.html",
       "devUrl": "http://localhost:5173",
       "projectPath": "/ui/",
 			"initCommand": "bun install",

@@ -96,7 +96,7 @@ export const StatusBar = () => {
           }}
         />
         <NavbarDivider />
-        <small>v{version || process.env.REACT_APP_VERSION}</small>
+        <small>v{version || import.meta.env.REACT_APP_VERSION}</small>
       </NavbarGroup>
     </Navbar>
   )

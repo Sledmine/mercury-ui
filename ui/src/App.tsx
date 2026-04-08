@@ -1,120 +1,119 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from "react"
+import { useEffect } from "react"
+import "./App.css"
+import "normalize.css"
+import "@blueprintjs/core/lib/css/blueprint.css"
+import "@blueprintjs/icons/lib/css/blueprint-icons.css"
+import "@blueprintjs/table/lib/css/table.css"
+import { NavBar } from "./components/NavBar/NavBar"
+import PackagesList from "./components/PackagesList/PackagesList"
+import MercuryPackage from "./types/MercuryPackage"
+import mercury from "./mercury"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  clearErrors,
+  pushError,
+  selectCommand,
+  selectErrors,
+  selectIsLoading,
+  selectPage,
+  selectTheme,
+  setCommand,
+  setIsLoading,
+  setLatestPackages,
+} from "./redux/slices/appSlice"
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Overlay,
+  Spinner,
+} from "@blueprintjs/core"
+import { BrowserTuner } from "./components/BrowserTuner/BrowserTuner"
+import Convert from "ansi-to-html"
+import { DialogMessage } from "./components/DialogMessage/DialogMessage"
+import { ConsoleView } from "./components/ConsoleView/ConsoleView"
+import StatusBar from "./components/StatusBar/StatusBar"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const convert = new Convert()
+  const dispatch = useDispatch()
+  const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
+  const themeClass = isDarkThemeEnabled ? "bp4-dark" : ""
+  const isLoading = useSelector(selectIsLoading)
+  const [packages, setPackages] = React.useState([] as MercuryPackage[])
+  const currentPage = useSelector(selectPage)
+  const errors = useSelector(selectErrors)
+  const [forceUpdate, setForceUpdate] = React.useState(false)
+  const command = useSelector(selectCommand)
+
+  useEffect(() => {
+    const getPackages = async () => {
+      try {
+        dispatch(setIsLoading(true))
+        let packages = []
+        if (currentPage === "available") {
+          packages = await mercury.fetch()
+          dispatch(setLatestPackages(packages))
+          const installedPackages = await mercury.list()
+          packages = packages.filter(
+            (pack) => !installedPackages.find((p) => p.name === pack.name)
+          )
+        } else {
+          packages = await mercury.list()
+        }
+        setPackages(packages)
+      } catch (error) {
+        dispatch(setIsLoading(false))
+        //@ts-ignore
+        dispatch(pushError(error.message))
+      }
+      dispatch(setIsLoading(false))
+    }
+    getPackages()
+  }, [currentPage, forceUpdate])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+    <div
+      className={`App ${themeClass}`}
+      style={{ backgroundColor: isDarkThemeEnabled ? "#25282e" : "" }}
+    >
+      <BrowserTuner />
+      <ConsoleView
+        command={command}
+        onCommandFinished={() => {
+          setForceUpdate(!forceUpdate)
+        }}
+        onClose={() => {
+          dispatch(setCommand(null))
+        }}
+      />
+      <DialogMessage />
+      <Overlay isOpen={isLoading} shouldReturnFocusOnClose>
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Spinner intent="primary" aria-label={"Loading..."} />
+          <p style={{ marginTop: 20 }} className={`${themeClass}`}>
+            Loading...
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      </Overlay>
+      <NavBar />
+      <div>
+        <PackagesList
+          packages={packages}
+          triggerUpdate={() => setForceUpdate(!forceUpdate)}
+        />
+      </div>
+      <StatusBar/>
+    </div>
   )
 }
 
