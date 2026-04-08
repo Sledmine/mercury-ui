@@ -10,6 +10,7 @@ import Convert from "ansi-to-html"
 import { useSelector } from "react-redux"
 import { selectTheme } from "../../redux/slices/appSlice"
 import { os, events } from "@neutralinojs/lib"
+import { BLUEPRINT_DARK_THEME_CLASS } from "../../constants/constants"
 
 // Ensure just one event will be used, if we assign eventer later multiple events will be triggered
 let currentProcessId: number | null
@@ -26,7 +27,7 @@ export const ConsoleView: React.FC<{
 }> = ({ command, onCommandFinished, onClose }) => {
   const convert = new Convert()
   const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
-  const themeClass = isDarkThemeEnabled ? "bp4-dark" : ""
+  const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
   const [terminalOutput, setTerminalOutput] = useState("")
   const [exitCode, setExitCode] = useState(0)
 

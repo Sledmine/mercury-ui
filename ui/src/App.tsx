@@ -35,12 +35,13 @@ import Convert from "ansi-to-html"
 import { DialogMessage } from "./components/DialogMessage/DialogMessage"
 import { ConsoleView } from "./components/ConsoleView/ConsoleView"
 import StatusBar from "./components/StatusBar/StatusBar"
+import { BLUEPRINT_DARK_THEME_CLASS } from "./constants/constants"
 
 function App() {
   const convert = new Convert()
   const dispatch = useDispatch()
   const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
-  const themeClass = isDarkThemeEnabled ? "bp4-dark" : ""
+  const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
   const isLoading = useSelector(selectIsLoading)
   const [packages, setPackages] = React.useState([] as MercuryPackage[])
   const currentPage = useSelector(selectPage)

@@ -8,12 +8,13 @@ import {
   selectErrors,
   selectTheme,
 } from "../../redux/slices/appSlice"
+import { BLUEPRINT_DARK_THEME_CLASS } from "../../constants/constants"
 
 export const DialogMessage = () => {
   const convert = new Convert()
   const dispatch = useDispatch()
   const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
-  const themeClass = isDarkThemeEnabled ? "bp4-dark" : ""
+  const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
   const errors = useSelector(selectErrors)
   return (
     <Dialog
