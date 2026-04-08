@@ -16,11 +16,17 @@ import "./PackagesList.css"
 interface PackageListProps {
   packages?: MercuryPackage[]
   triggerUpdate?: Function
+  onSelectPackage?: (pack: MercuryPackage) => void
+  selectedPackageLabel?: string | undefined
+  collapsed?: boolean
 }
 
 export const PackagesList: React.FC<PackageListProps> = ({
   packages = [],
   triggerUpdate,
+  onSelectPackage,
+  selectedPackageLabel,
+  collapsed = false,
 }) => {
   const currentTheme = useSelector(selectTheme)
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -84,8 +90,8 @@ export const PackagesList: React.FC<PackageListProps> = ({
   }
 
   return (
-    <>
-      <div style={{ position: "sticky", top: 50 }}>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ position: "sticky", top: 50, zIndex: 5, paddingRight: collapsed ? 6 : 0 }}>
         <InputGroup
           value={searchTerm}
           onChange={(e) => {
@@ -96,103 +102,62 @@ export const PackagesList: React.FC<PackageListProps> = ({
           large
           style={{
             backgroundColor: currentTheme === "dark" ? "#1f2329" : undefined,
+            display: collapsed ? "none" : undefined,
           }}
         />
       </div>
-      <div
-        style={{
-          height: "calc(100% - 140px)",
-          width: "100%",
-          position: "absolute",
-          overflowY: "scroll",
-        }}
-      >
+
+      <div style={{ flex: 1, width: "100%", overflowY: "auto", paddingTop: 8 }}>
         {packages
           .filter((pack) => {
             return pack.name.toLowerCase().includes(searchTerm)
           })
           .map((pack) => (
-            <Card key={pack.name}>
-              <div
-                style={{
-                  display: "inline-flex",
-                  float: "right",
-                }}
-              >
-                {pack.category === "map" && isPackageUpdatable(pack) && (
-                  <Tag intent="warning">
-                    <Icon icon="warning-sign" /> Update Available
-                  </Tag>
+            <Card
+              key={pack.name}
+              style={{
+                cursor: "pointer",
+                border:
+                  selectedPackageLabel && selectedPackageLabel === pack.label
+                    ? "2px solid #137cbd"
+                    : undefined,
+                marginBottom: 12,
+                display: "flex",
+                alignItems: "center",
+                padding: collapsed ? "8px" : undefined,
+              }}
+              onClick={() => {
+                if (onSelectPackage) onSelectPackage(pack)
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                <div style={{ width: collapsed ? 48 : 128, height: collapsed ? 48 : 128, backgroundImage: `url(${pack.image || latestPackages.find((p) => p.name === pack.name)?.image})`, backgroundSize: "cover", backgroundPosition: "center", borderRadius: 6, boxShadow: "0px 0px 10px rgba(0,0,0,0.6)", marginRight: collapsed ? 6 : 20 }} />
+                {!collapsed && (
+                  <div style={{ flex: 1 }}>
+                    <h2 style={{ margin: 0 }}>
+                      <a href="#" onClick={(e) => { e.preventDefault(); if (onSelectPackage) onSelectPackage(pack) }}>{pack.name}</a>{' '}{pack.category && <Tag>{pack.category}</Tag>}
+                    </h2>
+                    <h4 style={{ margin: '6px 0' }}>{pack.version} • {pack.author}</h4>
+                    <p style={{ marginTop: 6 }}>{pack.description}</p>
+                    <div style={{ marginTop: 8 }}>
+                      {pack.mirrors && <Button icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
+                      {pack.files && isPackageUpdatable(pack) && <Button intent="primary" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
+                      {pack.files && <Button intent="danger" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }}>Remove</Button>}
+                    </div>
+                  </div>
                 )}
-              </div>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ maxWidth: "50%" }}>
-                  <div
-                    style={{
-                      width: "128px",
-                      height: "128px",
-                      backgroundImage: `url(${
-                        pack.image ||
-                        latestPackages.find((p) => p.name === pack.name)?.image
-                      })`,
-                      //backgroundSize: "90%",
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "center",
-                      borderRadius: "6px",
-                      boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
-                      backgroundColor: "#1f2329",
-                    }}
-                  />
-                </div>
-                <div style={{ paddingLeft: "28px" }}>
-                  <h2>
-                    <a href="#"> {pack.name}</a>{" "}
-                    {pack.category && <Tag>{pack.category}</Tag>} &nbsp;
-                  </h2>
-                  <h3>Version: {pack.version}</h3>
-                  <h4>Author: {pack.author}</h4>
-                  <p>{pack.description}</p>
-                  <>
-                    {pack.mirrors && (
-                      <Button
-                        icon="cloud-download"
-                        onClick={() => install(pack.label)}
-                      >
-                        Install
-                      </Button>
-                    )}
-                    {pack.files && isPackageUpdatable(pack) && (
-                      <Button
-                        intent="primary"
-                        style={{
-                          animation:
-                            pack.category === "map"
-                              ? "flashButton 3s linear 0s infinite normal forwards"
-                              : undefined,
-                        }}
-                        icon="refresh"
-                        onClick={() => update(pack.label)}
-                      >
-                        Update
-                      </Button>
-                    )}{" "}
-                    {pack.files && (
-                      <Button
-                        intent="danger"
-                        icon="delete"
-                        onClick={() => remove(pack.label)}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </>
-                </div>
+                {collapsed && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {pack.mirrors && <Button small minimal icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }} />}
+                    {pack.files && isPackageUpdatable(pack) && <Button small minimal icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} />}
+                    {pack.files && <Button small minimal icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} />}
+                  </div>
+                )}
               </div>
             </Card>
           ))}
       </div>
-    </>
+    </div>
   )
 }
 

@@ -7,14 +7,13 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css"
 import "@blueprintjs/table/lib/css/table.css"
 import { NavBar } from "./components/NavBar/NavBar"
 import PackagesList from "./components/PackagesList/PackagesList"
+import PackageView from "./components/PackageView/PackageView"
 import MercuryPackage from "./types/MercuryPackage"
 import mercury from "./mercury"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  clearErrors,
   pushError,
   selectCommand,
-  selectErrors,
   selectIsLoading,
   selectPage,
   selectTheme,
@@ -22,32 +21,24 @@ import {
   setIsLoading,
   setLatestPackages,
 } from "./redux/slices/appSlice"
-import {
-  Button,
-  Dialog,
-  DialogBody,
-  DialogFooter,
-  Overlay,
-  Spinner,
-} from "@blueprintjs/core"
+import { Overlay, Spinner, Card } from "@blueprintjs/core"
 import { BrowserTuner } from "./components/BrowserTuner/BrowserTuner"
-import Convert from "ansi-to-html"
 import { DialogMessage } from "./components/DialogMessage/DialogMessage"
 import { ConsoleView } from "./components/ConsoleView/ConsoleView"
 import StatusBar from "./components/StatusBar/StatusBar"
 import { BLUEPRINT_DARK_THEME_CLASS } from "./constants/constants"
 
 function App() {
-  const convert = new Convert()
   const dispatch = useDispatch()
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
   const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
   const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
   const isLoading = useSelector(selectIsLoading)
   const [packages, setPackages] = React.useState([] as MercuryPackage[])
   const currentPage = useSelector(selectPage)
-  const errors = useSelector(selectErrors)
   const [forceUpdate, setForceUpdate] = React.useState(false)
   const command = useSelector(selectCommand)
+  const [selectedPackage, setSelectedPackage] = React.useState<null | MercuryPackage>(null)
 
   useEffect(() => {
     const getPackages = async () => {
@@ -65,6 +56,11 @@ function App() {
           packages = await mercury.list()
         }
         setPackages(packages)
+        // clear selection if not present
+        if (selectedPackage) {
+          const found = packages.find((p) => p.name === selectedPackage.name)
+          if (!found) setSelectedPackage(null)
+        }
       } catch (error) {
         dispatch(setIsLoading(false))
         //@ts-ignore
@@ -106,14 +102,48 @@ function App() {
           </p>
         </div>
       </Overlay>
-      <NavBar />
-      <div>
-        <PackagesList
-          packages={packages}
-          triggerUpdate={() => setForceUpdate(!forceUpdate)}
-        />
+      <NavBar sidebarCollapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+
+      <div style={{ padding: 20, marginTop: 6 }}>
+        {/* Main two-column layout: packages list on left, package details on right. More spacing for breathe */}
+        <div
+          style={{
+            display: "flex",
+            gap: 24,
+            marginTop: 6,
+            height: "calc(100vh - 160px)",
+          }}
+        >
+          <div style={{ width: sidebarCollapsed ? 72 : "42%", minWidth: sidebarCollapsed ? 72 : 360, display: "flex", flexDirection: "column", height: "100%", position: "relative", transition: "width 180ms ease" }}>
+            <PackagesList
+              packages={packages}
+              triggerUpdate={() => setForceUpdate(!forceUpdate)}
+              onSelectPackage={(p: MercuryPackage) => setSelectedPackage(p)}
+              selectedPackageLabel={selectedPackage?.label}
+              collapsed={sidebarCollapsed}
+            />
+          </div>
+
+          <div style={{ flex: 1, minWidth: sidebarCollapsed ? 420 : 420, overflowY: "auto" }}>
+            {selectedPackage ? (
+              <PackageView
+                pack={selectedPackage}
+                triggerUpdate={() => setForceUpdate(!forceUpdate)}
+              />
+            ) : (
+              <Card style={{ padding: 24 }}>
+                <h2>Select a package</h2>
+                <p>
+                  Select a package from the list on the left to see details,
+                  images and actions (install / update / remove).
+                </p>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
-      <StatusBar/>
+
+      <StatusBar />
     </div>
   )
 }
