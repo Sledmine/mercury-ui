@@ -109,7 +109,7 @@ function App() {
           </p>
         </div>
       </Overlay>
-      <NavBar />
+      <NavBar showBack={screen === 'detail'} onBack={() => setScreen('list')} />
 
       <div style={{ paddingLeft: 10, paddingRight: 10 }}>
         {/* Main two-column layout: packages list on left, package details on right. More spacing for breathe */}
@@ -137,7 +137,6 @@ function App() {
               <PackageView
                 pack={selectedPackage}
                 triggerUpdate={() => setForceUpdate(!forceUpdate)}
-                onBack={() => setScreen('list')}
               />
             )}
           </div>

@@ -20,7 +20,12 @@ import {
 } from "../../redux/slices/appSlice"
 import { os } from "@neutralinojs/lib"
 
-export const NavBar = () => {
+interface NavBarProps {
+  showBack?: boolean
+  onBack?: () => void
+}
+
+export const NavBar = ({ showBack = false, onBack }: NavBarProps) => {
   const currentTheme = useSelector(selectTheme)
   const currentPage = useSelector(selectPage)
   const dispatch = useDispatch()
@@ -72,6 +77,9 @@ export const NavBar = () => {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <NavbarGroup align="left">
+            {showBack && (
+              <Button className={Classes.MINIMAL} icon="arrow-left" onClick={() => { if (onBack) onBack() }} text="Back" />
+            )}
             <NavbarHeading>Mercury UI</NavbarHeading>
             <NavbarDivider />
           </NavbarGroup>
