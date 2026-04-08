@@ -2,7 +2,7 @@
   "applicationId": "js.neutralino.zero",
   "version": "1.0.0",
   "defaultMode": "window",
-  "documentRoot": "/mercury-ui-react/build/",
+  "documentRoot": "/ui/dist/",
   "url": "/",
   "enableServer": true,
   "enableNativeAPI": true,
@@ -30,15 +30,17 @@
   },
   "cli": {
     "binaryName": "mercury-ui",
-    "resourcesPath": "/mercury-ui-react/build/",
+    "resourcesPath": "/ui/dist/",
     "extensionsPath": "/extensions/",
-    "clientLibrary": "/mercury-ui-react/public/neutralino.js",
-    "binaryVersion": "4.15.0",
-    "clientVersion": "3.13.0",
     "frontendLibrary": {
       "patchFile": "/mercury-ui-react/public/index.html",
-      "devUrl": "http://localhost:3000"
-    }
+      "devUrl": "http://localhost:5173",
+      "projectPath": "/ui/",
+			"initCommand": "bun install",
+			"devCommand": "bun run dev",
+			"buildCommand": "bun run build"
+    },
+    "binaryVersion": "6.7.0"
   },
   "logging": {
     "enabled": true,
