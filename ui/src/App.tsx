@@ -111,18 +111,18 @@ function App() {
       </Overlay>
       <NavBar />
 
-      <div style={{ paddingLeft: 10, paddingRight: 10}}>
+      <div style={{ paddingLeft: 10, paddingRight: 10 }}>
         {/* Main two-column layout: packages list on left, package details on right. More spacing for breathe */}
         <div
           style={{
-            display: "flex",
-            gap: 24,
+            //display: "flex",
+            //gap: 24,
             marginTop: 6,
             height: "calc(100vh - 125px)",
           }}
         >
           {screen === 'list' && (
-            <div style={{ width: "42%", minWidth: 360, display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
+            <div style={{ width: "100%", minWidth: 360, display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
               <PackagesList
                 packages={packages}
                 triggerUpdate={() => setForceUpdate(!forceUpdate)}
@@ -133,25 +133,16 @@ function App() {
           )}
 
           <div style={{ flex: 1, minWidth: 420, overflowY: "auto" }}>
-            {screen === 'detail' && selectedPackage ? (
+            {screen === 'detail' && selectedPackage && (
               <PackageView
                 pack={selectedPackage}
                 triggerUpdate={() => setForceUpdate(!forceUpdate)}
                 onBack={() => setScreen('list')}
               />
-            ) : (
-              <Card style={{ padding: 24 }}>
-                <h2>Search packages</h2>
-                <p>
-                  Browse available or installed packages using the tabs in the
-                  header. Select a package to view details.
-                </p>
-              </Card>
             )}
           </div>
-         </div>
-       </div>
-
+        </div>
+      </div>
       <StatusBar />
     </div>
   )
