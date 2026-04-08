@@ -14,12 +14,17 @@ import mercury from "../../mercury"
 interface PackageViewProps {
   pack: MercuryPackage
   triggerUpdate?: Function
+  onBack?: () => void
 }
 
-const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate }) => {
+const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }) => {
   const dispatch = useDispatch()
   const latestPackages = useSelector(selectLatestPackages)
   const currentTheme = useSelector(selectTheme)
+
+  const handleBack = () => {
+    if (onBack) onBack()
+  }
 
   const isPackageUpdatable = (p: MercuryPackage) => {
     const latestPackage = latestPackages.find((x) => x.name === p.name)
@@ -60,6 +65,14 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate }) => {
 
   return (
     <div>
+      {/* Back button to return to package list */}
+      <div style={{ marginBottom: 12 }}>
+        {onBack && (
+          <button className="bp4-button bp4-minimal" onClick={handleBack}>
+            <span className="bp4-icon bp4-icon-arrow-left" /> Back
+          </button>
+        )}
+      </div>
       <div
         style={{
           height: 220,

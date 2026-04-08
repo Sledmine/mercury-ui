@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import {
   Button,
   Navbar,
@@ -20,12 +20,7 @@ import {
 } from "../../redux/slices/appSlice"
 import { os } from "@neutralinojs/lib"
 
-interface NavBarProps {
-  sidebarCollapsed?: boolean
-  onToggleSidebar?: () => void
-}
-
-export const NavBar = ({ sidebarCollapsed = false, onToggleSidebar }: NavBarProps) => {
+export const NavBar = () => {
   const currentTheme = useSelector(selectTheme)
   const currentPage = useSelector(selectPage)
   const dispatch = useDispatch()
@@ -67,7 +62,7 @@ export const NavBar = ({ sidebarCollapsed = false, onToggleSidebar }: NavBarProp
         top: 0,
         zIndex: 40,
         padding: "8px 12px",
-        height: 88,
+        height: 68,
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         display: "flex",
         flexDirection: "column",
@@ -103,14 +98,6 @@ export const NavBar = ({ sidebarCollapsed = false, onToggleSidebar }: NavBarProp
             icon={currentTheme === "light" ? "moon" : "flash"}
             onClick={() => dispatch(setTheme(toggledTheme))}
             text={currentTheme === "light" ? "Dark Theme" : "Light Theme"}
-          />
-          <Button
-            className={Classes.MINIMAL}
-            icon={sidebarCollapsed ? "chevron-right" : "chevron-left"}
-            onClick={() => {
-              if (onToggleSidebar) onToggleSidebar()
-            }}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           />
         </NavbarGroup>
       </div>

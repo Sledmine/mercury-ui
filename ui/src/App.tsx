@@ -30,7 +30,6 @@ import { BLUEPRINT_DARK_THEME_CLASS } from "./constants/constants"
 
 function App() {
   const dispatch = useDispatch()
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
   const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
   const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
   const isLoading = useSelector(selectIsLoading)
@@ -39,6 +38,14 @@ function App() {
   const [forceUpdate, setForceUpdate] = React.useState(false)
   const command = useSelector(selectCommand)
   const [selectedPackage, setSelectedPackage] = React.useState<null | MercuryPackage>(null)
+  const [screen, setScreen] = React.useState<'list' | 'detail'>('list')
+
+  // If the user switches to available/installed while on a package detail,
+  // return to the list screen so they can search packages for the selected tab.
+  React.useEffect(() => {
+    setScreen('list')
+    setSelectedPackage(null)
+  }, [currentPage])
 
   useEffect(() => {
     const getPackages = async () => {
@@ -74,7 +81,7 @@ function App() {
   return (
     <div
       className={`App ${themeClass}`}
-      style={{ backgroundColor: isDarkThemeEnabled ? "#25282e" : "" }}
+      style={{ backgroundColor: isDarkThemeEnabled ? "#15171b" : "" }}
     >
       <BrowserTuner />
       <ConsoleView
@@ -102,46 +109,48 @@ function App() {
           </p>
         </div>
       </Overlay>
-      <NavBar sidebarCollapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      <NavBar />
 
-      <div style={{ padding: 20, marginTop: 6 }}>
+      <div style={{ paddingLeft: 10, paddingRight: 10}}>
         {/* Main two-column layout: packages list on left, package details on right. More spacing for breathe */}
         <div
           style={{
             display: "flex",
             gap: 24,
             marginTop: 6,
-            height: "calc(100vh - 160px)",
+            height: "calc(100vh - 125px)",
           }}
         >
-          <div style={{ width: sidebarCollapsed ? 72 : "42%", minWidth: sidebarCollapsed ? 72 : 360, display: "flex", flexDirection: "column", height: "100%", position: "relative", transition: "width 180ms ease" }}>
-            <PackagesList
-              packages={packages}
-              triggerUpdate={() => setForceUpdate(!forceUpdate)}
-              onSelectPackage={(p: MercuryPackage) => setSelectedPackage(p)}
-              selectedPackageLabel={selectedPackage?.label}
-              collapsed={sidebarCollapsed}
-            />
-          </div>
+          {screen === 'list' && (
+            <div style={{ width: "42%", minWidth: 360, display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
+              <PackagesList
+                packages={packages}
+                triggerUpdate={() => setForceUpdate(!forceUpdate)}
+                onSelectPackage={(p: MercuryPackage) => { setSelectedPackage(p); setScreen('detail') }}
+                selectedPackageLabel={selectedPackage?.label}
+              />
+            </div>
+          )}
 
-          <div style={{ flex: 1, minWidth: sidebarCollapsed ? 420 : 420, overflowY: "auto" }}>
-            {selectedPackage ? (
+          <div style={{ flex: 1, minWidth: 420, overflowY: "auto" }}>
+            {screen === 'detail' && selectedPackage ? (
               <PackageView
                 pack={selectedPackage}
                 triggerUpdate={() => setForceUpdate(!forceUpdate)}
+                onBack={() => setScreen('list')}
               />
             ) : (
               <Card style={{ padding: 24 }}>
-                <h2>Select a package</h2>
+                <h2>Search packages</h2>
                 <p>
-                  Select a package from the list on the left to see details,
-                  images and actions (install / update / remove).
+                  Browse available or installed packages using the tabs in the
+                  header. Select a package to view details.
                 </p>
               </Card>
             )}
           </div>
-        </div>
-      </div>
+         </div>
+       </div>
 
       <StatusBar />
     </div>
