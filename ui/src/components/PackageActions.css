@@ -1,0 +1,61 @@
+.pkg-action-btn.bp6-button {
+  border: 1px solid #2a3040;
+  border-radius: 5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.pkg-action-btn.bp6-button .bp6-icon {
+  opacity: 0.95;
+}
+
+.pkg-action-install.bp6-button {
+  border-color: #2a6090;
+  background: linear-gradient(135deg, #1a4a6e, #0d3350);
+  color: #4fc3f7;
+}
+
+.pkg-action-install.bp6-button:hover {
+  border-color: #4b87bd;
+  color: #8bd7ff;
+}
+
+.pkg-action-update.bp6-button {
+  border-color: #4f3b14;
+  background: linear-gradient(135deg, #4a3513, #2c220f);
+  color: #f6be59;
+}
+
+.pkg-action-update.bp6-button:hover {
+  border-color: #7b5d23;
+  color: #ffd48a;
+}
+
+.pkg-action-remove.bp6-button {
+  border-color: #6e2b2b;
+  background: linear-gradient(135deg, #4a1f1f, #321313);
+  color: #f28b82;
+}
+
+.pkg-action-remove.bp6-button:hover {
+  border-color: #9c3c3c;
+  color: #ffc2bc;
+}
+
+.pkg-action-cover.bp6-button {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.pkg-action-compact.bp6-button {
+  min-width: 32px;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

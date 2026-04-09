@@ -12,6 +12,7 @@ import {
 import MercuryPackage from "../../types/MercuryPackage"
 import mercury from "../../mercury"
 import "./PackagesList.css"
+import "../PackageActions.css"
 
 interface PackageListProps {
   packages?: MercuryPackage[]
@@ -140,17 +141,17 @@ export const PackagesList: React.FC<PackageListProps> = ({
                     <h4 style={{ margin: '6px 0' }}>{pack.version} • {pack.author}</h4>
                     <p style={{ marginTop: 6 }}>{pack.description}</p>
                     <div style={{ marginTop: 8 }}>
-                      {pack.mirrors && <Button icon="cloud-download" intent="primary" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
-                      {pack.files && isPackageUpdatable(pack) && <Button intent="success" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
-                      {pack.files && <Button intent="danger" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }}>Remove</Button>}
+                      {pack.mirrors && <Button className="pkg-action-btn pkg-action-install" icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
+                      {pack.files && isPackageUpdatable(pack) && <Button className="pkg-action-btn pkg-action-update" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
+                      {pack.files && <Button className="pkg-action-btn pkg-action-remove" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }}>Remove</Button>}
                     </div>
                   </div>
                 )}
                 {collapsed && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {pack.mirrors && <Button small minimal icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }} />}
-                    {pack.files && isPackageUpdatable(pack) && <Button small minimal icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} />}
-                    {pack.files && <Button small minimal icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} />}
+                    {pack.mirrors && <Button small className="pkg-action-btn pkg-action-install pkg-action-compact" icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }} />}
+                    {pack.files && isPackageUpdatable(pack) && <Button small className="pkg-action-btn pkg-action-update pkg-action-compact" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} />}
+                    {pack.files && <Button small className="pkg-action-btn pkg-action-remove pkg-action-compact" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} />}
                   </div>
                 )}
               </div>

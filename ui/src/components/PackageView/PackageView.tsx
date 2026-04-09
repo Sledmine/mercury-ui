@@ -12,6 +12,7 @@ import {
 import MercuryPackage from "../../types/MercuryPackage"
 import mercury from "../../mercury"
 import "./PackageView.css"
+import "../PackageActions.css"
 
 interface PackageViewProps {
   pack: MercuryPackage
@@ -156,7 +157,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
         </div>
         <div>
           {pack.mirrors && (
-            <Button className="pv-cover-install" icon="cloud-download" onClick={() => install(pack.label)}>
+            <Button className="pkg-action-btn pkg-action-install pkg-action-cover" icon="cloud-download" onClick={() => install(pack.label)}>
               Install
             </Button>
           )}
@@ -172,12 +173,12 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             {pack.files && isPackageUpdatable(pack) && (
-              <Button intent="warning" icon="refresh" onClick={() => update(pack.label)}>
+              <Button className="pkg-action-btn pkg-action-update" icon="refresh" onClick={() => update(pack.label)}>
                 Update
               </Button>
             )}
             {pack.files && (
-              <Button intent="danger" icon="delete" onClick={() => remove(pack.label)}>
+              <Button className="pkg-action-btn pkg-action-remove" icon="delete" onClick={() => remove(pack.label)}>
                 Remove
               </Button>
             )}

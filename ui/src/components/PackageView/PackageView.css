@@ -15,21 +15,6 @@
   min-width: 0;
 }
 
-.pv-cover-install.bp6-button {
-  border: 1px solid #2a6090;
-  background: linear-gradient(135deg, #1a4a6e, #0d3350);
-  color: #4fc3f7;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.pv-cover-install.bp6-button:hover {
-  border-color: #4b87bd;
-  color: #8bd7ff;
-}
-
 .pv-body-layout {
   display: flex;
   gap: 10px;
