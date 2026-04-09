@@ -90,10 +90,16 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
 
   const renderChangelogHtml = (value: unknown) => {
     const markdown = toMarkdownSource(value)
-    return marked.parse(markdown, {
+    const html = marked.parse(markdown, {
       gfm: true,
       breaks: true,
     }) as string
+
+    return html
+      .replace(/<h3>\s*Added\s*<\/h3>/gi, '<h3 class="cl-group-label label-added">Added</h3>')
+      .replace(/<h3>\s*Fixed\s*<\/h3>/gi, '<h3 class="cl-group-label label-fixed">Fixed</h3>')
+      .replace(/<h3>\s*Changed\s*<\/h3>/gi, '<h3 class="cl-group-label label-changed">Changed</h3>')
+      .replace(/<h3>\s*Removed\s*<\/h3>/gi, '<h3 class="cl-group-label label-removed">Removed</h3>')
   }
 
   const imageFiles = (pack.files || []).filter((f: any) => {
@@ -121,20 +127,12 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
         )}
       </div>
       <div
+        className="pv-cover"
         style={{
-          height: 220,
-          borderRadius: 8,
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0, 0, 0, 0.753)), url(${image})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "white",
-          display: "flex",
-          alignItems: "flex-end",
-          padding: 20,
-          boxShadow: "0 6px 18px rgba(0,0,0,0.4)",
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.35), rgba(0, 0, 0, 0.82)), url(${backdropImage || image})`,
         }}
       >
-        <div style={{ display: "flex", gap: 18, alignItems: "end" }}>
+        <div className="pv-cover-content" style={{ display: "flex", gap: 18, alignItems: "end" }}>
           <div
             style={{
               width: 160,
@@ -156,6 +154,13 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             </div>
           </div>
         </div>
+        <div>
+          {pack.mirrors && (
+            <Button className="pv-cover-install" icon="cloud-download" onClick={() => install(pack.label)}>
+              Install
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="pv-body-layout" style={{ marginTop: 12 }}>
@@ -166,11 +171,6 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             <p style={{ color: currentTheme === "dark" ? "#cfd8e3" : "#444" }}>{pack.author}</p>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            {pack.mirrors && (
-              <Button intent="primary" icon="cloud-download" onClick={() => install(pack.label)}>
-                Install
-              </Button>
-            )}
             {pack.files && isPackageUpdatable(pack) && (
               <Button intent="warning" icon="refresh" onClick={() => update(pack.label)}>
                 Update

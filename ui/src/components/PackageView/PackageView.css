@@ -1,3 +1,35 @@
+.pv-cover {
+  height: 220px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.pv-cover-content {
+  min-width: 0;
+}
+
+.pv-cover-install.bp6-button {
+  border: 1px solid #2a6090;
+  background: linear-gradient(135deg, #1a4a6e, #0d3350);
+  color: #4fc3f7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pv-cover-install.bp6-button:hover {
+  border-color: #4b87bd;
+  color: #8bd7ff;
+}
+
 .pv-body-layout {
   display: flex;
   gap: 10px;
@@ -155,7 +187,47 @@
   background: rgba(120, 130, 150, 0.22);
 }
 
+.package-changelog-markdown h2 {
+  margin-top: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(120, 130, 150, 0.22);
+  color: #c0c8d8;
+}
+
+.package-changelog-markdown .cl-group-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.package-changelog-markdown .label-added {
+  color: #2dd4a0;
+}
+
+.package-changelog-markdown .label-fixed {
+  color: #4fc3f7;
+}
+
+.package-changelog-markdown .label-changed {
+  color: #f59e0b;
+}
+
+.package-changelog-markdown .label-removed {
+  color: #f87171;
+}
+
 @media (max-width: 980px) {
+  .pv-cover {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    height: auto;
+    min-height: 220px;
+  }
+
   .pv-body-layout {
     flex-direction: column;
   }
