@@ -1,5 +1,5 @@
 import React from "react"
-import { Card, Button, Tag, Tabs, Tab, Divider } from "@blueprintjs/core"
+import { Card, Tag, Tabs, Tab, Divider } from "@blueprintjs/core"
 import { useDispatch, useSelector } from "react-redux"
 import { marked } from "marked"
 import {
@@ -12,7 +12,7 @@ import {
 import MercuryPackage from "../../types/MercuryPackage"
 import mercury from "../../mercury"
 import "./PackageView.css"
-import "../PackageActions.css"
+import PackageActionButton from "../PackageActionButton/PackageActionButton"
 
 interface PackageViewProps {
   pack: MercuryPackage
@@ -155,11 +155,15 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             </div>
           </div>
         </div>
-        <div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
           {pack.mirrors && (
-            <Button className="pkg-action-btn pkg-action-install pkg-action-cover" icon="cloud-download" onClick={() => install(pack.label)}>
-              Install
-            </Button>
+            <PackageActionButton action="install" cover onClick={() => install(pack.label)} />
+          )}
+          {pack.files && isPackageUpdatable(pack) && (
+            <PackageActionButton action="update" cover onClick={() => update(pack.label)} />
+          )}
+          {pack.files && (
+            <PackageActionButton action="remove" cover onClick={() => remove(pack.label)} />
           )}
         </div>
       </div>
@@ -170,18 +174,6 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
           <div>
             <h3 style={{ margin: 0 }}>{pack.description}</h3>
             <p style={{ color: currentTheme === "dark" ? "#cfd8e3" : "#444" }}>{pack.author}</p>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {pack.files && isPackageUpdatable(pack) && (
-              <Button className="pkg-action-btn pkg-action-update" icon="refresh" onClick={() => update(pack.label)}>
-                Update
-              </Button>
-            )}
-            {pack.files && (
-              <Button className="pkg-action-btn pkg-action-remove" icon="delete" onClick={() => remove(pack.label)}>
-                Remove
-              </Button>
-            )}
           </div>
         </div>
         <Divider style={{ margin: "12px 0" }} />

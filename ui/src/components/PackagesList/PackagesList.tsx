@@ -1,6 +1,5 @@
 import React from "react"
-import { Button, Card, Tag, InputGroup } from "@blueprintjs/core"
-import { Icon } from "@blueprintjs/core"
+import { Card, Tag, InputGroup } from "@blueprintjs/core"
 import { useDispatch, useSelector } from "react-redux"
 import {
   pushError,
@@ -12,7 +11,7 @@ import {
 import MercuryPackage from "../../types/MercuryPackage"
 import mercury from "../../mercury"
 import "./PackagesList.css"
-import "../PackageActions.css"
+import PackageActionButton from "../PackageActionButton/PackageActionButton"
 
 interface PackageListProps {
   packages?: MercuryPackage[]
@@ -36,26 +35,6 @@ export const PackagesList: React.FC<PackageListProps> = ({
 
   const install = async (label: string) => {
     dispatch(setCommand(`mercury install ${label}`))
-  }
-
-  const updateByCLI = async (label: string) => {
-    try {
-      dispatch(setIsLoading(true))
-      const { isUpdated, stdOut } = await mercury.update(label)
-      dispatch(setIsLoading(false))
-      if (!isUpdated) {
-        dispatch(pushError(stdOut))
-      } else {
-        if (triggerUpdate) {
-          triggerUpdate()
-        }
-      }
-    } catch (error) {
-      dispatch(setIsLoading(false))
-      //@ts-ignore
-      dispatch(pushError(error.message))
-      console.error(error)
-    }
   }
 
   const update = async (label: string) => {
@@ -141,17 +120,17 @@ export const PackagesList: React.FC<PackageListProps> = ({
                     <h4 style={{ margin: '6px 0' }}>{pack.version} • {pack.author}</h4>
                     <p style={{ marginTop: 6 }}>{pack.description}</p>
                     <div style={{ marginTop: 8 }}>
-                      {pack.mirrors && <Button className="pkg-action-btn pkg-action-install" icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
-                      {pack.files && isPackageUpdatable(pack) && <Button className="pkg-action-btn pkg-action-update" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
-                      {pack.files && <Button className="pkg-action-btn pkg-action-remove" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }}>Remove</Button>}
+                      {pack.mirrors && <PackageActionButton action="install" onClick={(ev) => { ev?.stopPropagation(); install(pack.label) }} />}
+                      {pack.files && isPackageUpdatable(pack) && <PackageActionButton action="update" onClick={(ev) => { ev?.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }} />}
+                      {pack.files && <PackageActionButton action="remove" onClick={(ev) => { ev?.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }} />}
                     </div>
                   </div>
                 )}
                 {collapsed && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {pack.mirrors && <Button small className="pkg-action-btn pkg-action-install pkg-action-compact" icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }} />}
-                    {pack.files && isPackageUpdatable(pack) && <Button small className="pkg-action-btn pkg-action-update pkg-action-compact" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} />}
-                    {pack.files && <Button small className="pkg-action-btn pkg-action-remove pkg-action-compact" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} />}
+                    {pack.mirrors && <PackageActionButton action="install" compact onClick={(ev) => { ev?.stopPropagation(); install(pack.label) }} />}
+                    {pack.files && isPackageUpdatable(pack) && <PackageActionButton action="update" compact onClick={(ev) => { ev?.stopPropagation(); update(pack.label) }} />}
+                    {pack.files && <PackageActionButton action="remove" compact onClick={(ev) => { ev?.stopPropagation(); remove(pack.label) }} />}
                   </div>
                 )}
               </div>
