@@ -15,6 +15,7 @@
     "@neutralinojs/lib": "^6.7.0",
     "@reduxjs/toolkit": "^1.9.3",
     "ansi-to-html": "^0.7.2",
+    "marked": "^18.0.0",
     "react": "18",
     "react-dom": "18",
     "react-redux": "^9.2.0"

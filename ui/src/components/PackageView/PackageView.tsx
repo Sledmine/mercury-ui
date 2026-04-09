@@ -1,6 +1,7 @@
 import React from "react"
 import { Card, Button, Tag, Tabs, Tab, Divider } from "@blueprintjs/core"
 import { useDispatch, useSelector } from "react-redux"
+import { marked } from "marked"
 import {
   pushError,
   selectLatestPackages,
@@ -21,6 +22,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
   const dispatch = useDispatch()
   const latestPackages = useSelector(selectLatestPackages)
   const currentTheme = useSelector(selectTheme)
+  const latestPackage = latestPackages.find((x) => x.name === pack.name)
 
   const handleBack = () => {
     if (onBack) onBack()
@@ -57,8 +59,40 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
     }
   }
 
-  const image = pack.image || latestPackages.find((p) => p.name === pack.name)?.image
-  const backdropImage = pack.backdropImageUrl || latestPackages.find((p) => p.name === pack.name)?.backdropImageUrl
+  const image = pack.image || latestPackage?.image
+  const backdropImage = pack.backdropImageUrl || latestPackage?.backdropImageUrl
+  const changelog = pack.changelog || latestPackage?.changelog
+
+  const decodeHtmlEntities = (input: string) => {
+    if (typeof window === "undefined") return input
+    const txt = window.document.createElement("textarea")
+    txt.innerHTML = input
+    return txt.value
+  }
+
+  const toMarkdownSource = (value: unknown) => {
+    if (!value) return "No changelog available for this package."
+    if (Array.isArray(value)) return value.map((x) => String(x)).join("\n")
+    if (typeof value === "object") return `\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\``
+
+    const raw = String(value)
+    // Some packages wrap markdown text inside HTML tags (<p> / <br>)
+    const unwrapped = raw
+      .replace(/\r\n/g, "\n")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>\s*<p>/gi, "\n\n")
+      .replace(/<\/?p>/gi, "")
+
+    return decodeHtmlEntities(unwrapped).trim()
+  }
+
+  const renderChangelogHtml = (value: unknown) => {
+    const markdown = toMarkdownSource(value)
+    return marked.parse(markdown, {
+      gfm: true,
+      breaks: true,
+    }) as string
+  }
 
   const imageFiles = (pack.files || []).filter((f: any) => {
     return /\.(png|jpe?g|webp|gif)$/i.test(f.path)
@@ -158,6 +192,73 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
               id="files"
               title={`Files (${(pack.files || []).length})`}
               panel={<div><ul>{(pack.files || []).map((f: any, i: number) => (<li key={i}>{f.path}</li>))}</ul></div>}
+            />
+            <Tab
+              id="changelog"
+              title="CHANGELOG"
+              panel={
+                <div
+                  className="package-changelog-markdown"
+                  style={{
+                    color: currentTheme === "dark" ? "#d7dee7" : "#2b2b2b",
+                    lineHeight: 1.5,
+                    padding: "6px 8px",
+                    borderRadius: 8,
+                    background: currentTheme === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)",
+                  }}
+                >
+                  <div
+                    dangerouslySetInnerHTML={{ __html: renderChangelogHtml(changelog) }}
+                  />
+                  <style>{`
+                    .package-changelog-markdown h1,
+                    .package-changelog-markdown h2,
+                    .package-changelog-markdown h3,
+                    .package-changelog-markdown h4 {
+                      margin: 14px 0 8px;
+                      line-height: 1.3;
+                      font-weight: 700;
+                    }
+                    .package-changelog-markdown h1 { font-size: 1.35rem; }
+                    .package-changelog-markdown h2 { font-size: 1.15rem; }
+                    .package-changelog-markdown h3 { font-size: 1rem; }
+                    .package-changelog-markdown p { margin: 8px 0; }
+                    .package-changelog-markdown ul,
+                    .package-changelog-markdown ol { margin: 8px 0 8px 20px; }
+                    .package-changelog-markdown li { margin: 4px 0; }
+                    .package-changelog-markdown hr {
+                      border: none;
+                      height: 1px;
+                      margin: 14px 0;
+                      background: ${currentTheme === "dark" ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.15)"};
+                    }
+                    .package-changelog-markdown a {
+                      color: ${currentTheme === "dark" ? "#7ab6ff" : "#106ba3"};
+                      text-decoration: none;
+                      font-weight: 600;
+                    }
+                    .package-changelog-markdown a:hover { text-decoration: underline; }
+                    .package-changelog-markdown code {
+                      font-family: var(--pt-font-family-monospace, ui-monospace, monospace);
+                      font-size: 0.9em;
+                      padding: 1px 5px;
+                      border-radius: 4px;
+                      background: ${currentTheme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"};
+                    }
+                    .package-changelog-markdown pre {
+                      margin: 10px 0;
+                      padding: 12px;
+                      border-radius: 8px;
+                      overflow: auto;
+                      background: ${currentTheme === "dark" ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"};
+                    }
+                    .package-changelog-markdown pre code {
+                      background: transparent;
+                      padding: 0;
+                    }
+                  `}</style>
+                </div>
+              }
             />
           </Tabs>
         </div>

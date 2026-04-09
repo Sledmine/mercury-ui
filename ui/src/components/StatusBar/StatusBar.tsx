@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Button,
   Navbar,
   NavbarDivider,
   NavbarGroup,
-  NavbarHeading,
 } from "@blueprintjs/core"
 import { os, app } from "@neutralinojs/lib"
 import mercury from "../../mercury"
 import { useDispatch } from "react-redux"
-import { pushError, setCommand, setIsLoading } from "../../redux/slices/appSlice"
+import { pushError, setIsLoading } from "../../redux/slices/appSlice"
 
 export const StatusBar = () => {
   const [gamePath, setGamePath] = useState("")
@@ -71,27 +70,6 @@ export const StatusBar = () => {
               app.exit()
             } else {
               dispatch(pushError("You are already on the latest version."))
-            }
-          }}
-        />
-        <Button
-          icon="cog"
-          text="Game path"
-          onClick={async () => {
-            const path = await os.showFolderDialog("Select game path")
-            if (path) {
-              //dispatch(setCommand(`mercury config game.path ${path}`))
-              const result = await mercury.config("game.path", `"${path}"`)
-              if (result) {
-                // Refresh application
-                window.location.reload()
-              } else {
-                dispatch(
-                  pushError(
-                    "Failed to set game path, verify you have permissions to write to the config file."
-                  )
-                )
-              }
             }
           }}
         />

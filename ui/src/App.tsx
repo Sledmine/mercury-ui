@@ -21,12 +21,13 @@ import {
   setIsLoading,
   setLatestPackages,
 } from "./redux/slices/appSlice"
-import { Overlay, Spinner, Card } from "@blueprintjs/core"
+import { Overlay, Spinner } from "@blueprintjs/core"
 import { BrowserTuner } from "./components/BrowserTuner/BrowserTuner"
 import { DialogMessage } from "./components/DialogMessage/DialogMessage"
 import { ConsoleView } from "./components/ConsoleView/ConsoleView"
 import StatusBar from "./components/StatusBar/StatusBar"
 import { BLUEPRINT_DARK_THEME_CLASS } from "./constants/constants"
+import SettingsDialog from "./components/SettingsDialog/SettingsDialog"
 
 function App() {
   const dispatch = useDispatch()
@@ -39,6 +40,7 @@ function App() {
   const command = useSelector(selectCommand)
   const [selectedPackage, setSelectedPackage] = React.useState<null | MercuryPackage>(null)
   const [screen, setScreen] = React.useState<'list' | 'detail'>('list')
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = React.useState(false)
 
   // If the user switches to available/installed while on a package detail,
   // return to the list screen so they can search packages for the selected tab.
@@ -94,6 +96,10 @@ function App() {
         }}
       />
       <DialogMessage />
+      <SettingsDialog
+        isOpen={isSettingsDialogOpen}
+        onClose={() => setIsSettingsDialogOpen(false)}
+      />
       <Overlay isOpen={isLoading} shouldReturnFocusOnClose>
         <div
           style={{
@@ -109,7 +115,11 @@ function App() {
           </p>
         </div>
       </Overlay>
-      <NavBar showBack={screen === 'detail'} onBack={() => setScreen('list')} />
+      <NavBar
+        showBack={screen === 'detail'}
+        onBack={() => setScreen('list')}
+        onOpenSettings={() => setIsSettingsDialogOpen(true)}
+      />
 
       <div style={{ paddingLeft: 10, paddingRight: 10 }}>
         {/* Main two-column layout: packages list on left, package details on right. More spacing for breathe */}

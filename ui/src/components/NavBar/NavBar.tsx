@@ -1,4 +1,3 @@
-import React from "react"
 import {
   Button,
   Navbar,
@@ -23,9 +22,10 @@ import { os } from "@neutralinojs/lib"
 interface NavBarProps {
   showBack?: boolean
   onBack?: () => void
+  onOpenSettings?: () => void
 }
 
-export const NavBar = ({ showBack = false, onBack }: NavBarProps) => {
+export const NavBar = ({ showBack = false, onBack, onOpenSettings }: NavBarProps) => {
   const currentTheme = useSelector(selectTheme)
   const currentPage = useSelector(selectPage)
   const dispatch = useDispatch()
@@ -100,6 +100,12 @@ export const NavBar = ({ showBack = false, onBack }: NavBarProps) => {
             onClick={insertDialog}
             icon="plus"
             text="Insert"
+          />
+          <Button
+            className={Classes.MINIMAL}
+            icon="cog"
+            onClick={() => onOpenSettings && onOpenSettings()}
+            text="Settings"
           />
           <Button
             className={Classes.MINIMAL}
