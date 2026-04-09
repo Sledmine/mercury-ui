@@ -11,6 +11,7 @@ import {
 } from "../../redux/slices/appSlice"
 import MercuryPackage from "../../types/MercuryPackage"
 import mercury from "../../mercury"
+import "./PackageView.css"
 
 interface PackageViewProps {
   pack: MercuryPackage
@@ -62,6 +63,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
   const image = pack.image || latestPackage?.image
   const backdropImage = pack.backdropImageUrl || latestPackage?.backdropImageUrl
   const changelog = pack.changelog || latestPackage?.changelog
+  const files = pack.files || []
 
   const decodeHtmlEntities = (input: string) => {
     if (typeof window === "undefined") return input
@@ -97,6 +99,16 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
   const imageFiles = (pack.files || []).filter((f: any) => {
     return /\.(png|jpe?g|webp|gif)$/i.test(f.path)
   })
+
+  const fileNameFromPath = (path: string) => path.split("/").pop() || path
+  const fileIconFromPath = (path: string) => {
+    if (/\.(map|yelo)$/i.test(path)) return "map"
+    if (/\.(ogg|wav|mp3)$/i.test(path)) return "music"
+    if (/\.(txt|md)$/i.test(path)) return "document"
+    if (/\.(png|jpe?g|webp|gif)$/i.test(path)) return "media"
+    if (/\.(zip|7z|rar|merc|mercu)$/i.test(path)) return "archive"
+    return "document-open"
+  }
 
   return (
     <div>
@@ -146,8 +158,9 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
         </div>
       </div>
 
-      <Card style={{ marginTop: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="pv-body-layout" style={{ marginTop: 12 }}>
+        <Card className="pv-main-card" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
           <div>
             <h3 style={{ margin: 0 }}>{pack.description}</h3>
             <p style={{ color: currentTheme === "dark" ? "#cfd8e3" : "#444" }}>{pack.author}</p>
@@ -178,20 +191,41 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
               id="images"
               title={`Images (${imageFiles.length + (image ? 1 : 0)})`}
               panel={
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <div className="pv-images-grid">
                   {image && (
-                    <img src={backdropImage || image} style={{ maxWidth: 320, borderRadius: 6 }} alt="backdrop" />
+                    <div className="pv-image-card pv-image-card-cover">
+                      <img src={backdropImage || image} alt="backdrop" />
+                      <div className="pv-image-overlay">Cover</div>
+                    </div>
                   )}
                   {imageFiles.map((f: any, idx: number) => (
-                    <img key={idx} src={f.path} style={{ width: 180, borderRadius: 6 }} alt={`img-${idx}`} />
+                    <div key={idx} className="pv-image-card">
+                      <img src={f.path} alt={`img-${idx}`} />
+                      <div className="pv-image-overlay">{fileNameFromPath(f.path)}</div>
+                    </div>
                   ))}
                 </div>
               }
             />
             <Tab
               id="files"
-              title={`Files (${(pack.files || []).length})`}
-              panel={<div><ul>{(pack.files || []).map((f: any, i: number) => (<li key={i}>{f.path}</li>))}</ul></div>}
+              title={`Files (${files.length})`}
+              panel={
+                <div className="pv-files-list">
+                  {files.map((f: any, i: number) => (
+                    <div key={i} className="pv-file-row">
+                      <div className="pv-file-main">
+                        <span className={`bp6-icon bp6-icon-${fileIconFromPath(f.path)} pv-file-icon`} />
+                        <div>
+                          <div className="pv-file-name">{fileNameFromPath(f.path)}</div>
+                          <div className="pv-file-meta">{f.path}</div>
+                        </div>
+                      </div>
+                      <div className="pv-file-side">{f.type || "file"}</div>
+                    </div>
+                  ))}
+                </div>
+              }
             />
             <Tab
               id="changelog"
@@ -262,7 +296,32 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             />
           </Tabs>
         </div>
-      </Card>
+        </Card>
+        <Card className="pv-side-card" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+          <div className="pv-side-row">
+            <div className="pv-side-label">Version</div>
+            <div className="pv-side-value pv-side-value-accent">{pack.version}</div>
+          </div>
+          <div className="pv-side-divider" />
+          <div className="pv-side-row">
+            <div className="pv-side-label">Author</div>
+            <div className="pv-side-value">{pack.author}</div>
+          </div>
+          <div className="pv-side-row">
+            <div className="pv-side-label">Type</div>
+            <div className="pv-side-value">{pack.category}</div>
+          </div>
+          <div className="pv-side-row">
+            <div className="pv-side-label">Files</div>
+            <div className="pv-side-value">{files.length}</div>
+          </div>
+          <div className="pv-side-divider" />
+          <div className="pv-side-row">
+            <div className="pv-side-label">Changelog</div>
+            <div className="pv-side-value">{changelog ? "Available" : "Not available"}</div>
+          </div>
+        </Card>
+      </div>
     </div>
   )
 }
