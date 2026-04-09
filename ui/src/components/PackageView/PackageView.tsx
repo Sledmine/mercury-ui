@@ -66,7 +66,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
   return (
     <div>
       {/* Back button to return to package list */}
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ marginBottom: 2 }}>
         {onBack && (
           <button className="bp4-button bp4-minimal" onClick={handleBack}>
             <span className="bp4-icon bp4-icon-arrow-left" /> Back
@@ -77,7 +77,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
         style={{
           height: 220,
           borderRadius: 8,
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${image})`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0, 0, 0, 0.753)), url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "white",
@@ -102,10 +102,10 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
           />
           <div>
             <h2 style={{ margin: 0 }}>{pack.name}</h2>
-            <div style={{ marginTop: 6 }}>
-              <Tag>{pack.category}</Tag>
-              <Tag>{pack.version}</Tag>
-              <Tag>{pack.author}</Tag>
+            <div style={{ marginTop: 6, gap: 8, display: "flex", flexWrap: "wrap" }}>
+              <Tag intent="primary">{pack.category}</Tag>
+              <Tag intent="success">v{pack.version}</Tag>
+              <Tag intent="none">{pack.author}</Tag>
             </div>
           </div>
         </div>
