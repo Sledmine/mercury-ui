@@ -7,12 +7,13 @@ import {
   FormGroup,
   InputGroup,
   Spinner,
+  Switch,
 } from "@blueprintjs/core"
 import { os } from "@neutralinojs/lib"
 import { useDispatch, useSelector } from "react-redux"
 import mercury from "../../mercury"
 import { BLUEPRINT_DARK_THEME_CLASS } from "../../constants/constants"
-import { pushError, selectTheme } from "../../redux/slices/appSlice"
+import { pushError, selectTheme, setTheme } from "../../redux/slices/appSlice"
 
 interface SettingsDialogProps {
   isOpen: boolean
@@ -21,7 +22,8 @@ interface SettingsDialogProps {
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch()
-  const isDarkThemeEnabled = useSelector(selectTheme) === "dark"
+  const currentTheme = useSelector(selectTheme)
+  const isDarkThemeEnabled = currentTheme === "dark"
   const themeClass = isDarkThemeEnabled ? BLUEPRINT_DARK_THEME_CLASS : ""
 
   const [gamePath, setGamePath] = useState("")
@@ -91,6 +93,17 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       canOutsideClickClose={!isSaving}
     >
       <DialogBody>
+        <FormGroup label="Appearance" helperText="Configure the application theme.">
+          <Switch
+            checked={isDarkThemeEnabled}
+            label={isDarkThemeEnabled ? "Dark theme" : "Light theme"}
+            innerLabel="Light"
+            innerLabelChecked="Dark"
+            onChange={(e) => dispatch(setTheme(e.currentTarget.checked ? "dark" : "light"))}
+            disabled={isSaving}
+          />
+        </FormGroup>
+
         <FormGroup label="Game path" helperText="Path to your Halo CE installation directory.">
           <div style={{ display: "flex", gap: 8 }}>
             <InputGroup

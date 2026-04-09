@@ -10,8 +10,6 @@ import {
 } from "@blueprintjs/core"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  selectTheme,
-  setTheme,
   setCommand,
   pushError,
   selectPage,
@@ -26,10 +24,8 @@ interface NavBarProps {
 }
 
 export const NavBar = ({ showBack = false, onBack, onOpenSettings }: NavBarProps) => {
-  const currentTheme = useSelector(selectTheme)
   const currentPage = useSelector(selectPage)
   const dispatch = useDispatch()
-  const toggledTheme = currentTheme === "light" ? "dark" : "light"
 
   const insert = async (path: string) => {
     dispatch(setCommand(`mercury insert "${path}"`))
@@ -106,12 +102,6 @@ export const NavBar = ({ showBack = false, onBack, onOpenSettings }: NavBarProps
             icon="cog"
             onClick={() => onOpenSettings && onOpenSettings()}
             text="Settings"
-          />
-          <Button
-            className={Classes.MINIMAL}
-            icon={currentTheme === "light" ? "moon" : "flash"}
-            onClick={() => dispatch(setTheme(toggledTheme))}
-            text={currentTheme === "light" ? "Dark Theme" : "Light Theme"}
           />
         </NavbarGroup>
       </div>
