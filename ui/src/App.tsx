@@ -129,6 +129,7 @@ function App() {
             //gap: 24,
             marginTop: 6,
             height: "calc(100vh - 125px)",
+            minHeight: 0,
           }}
         >
           {screen === 'list' && (
@@ -142,7 +143,15 @@ function App() {
             </div>
           )}
 
-          <div style={{ flex: 1, minWidth: 420, overflowY: "auto" }}>
+          <div
+            style={{
+              width: "100%",
+              minWidth: 420,
+              height: "100%",
+              minHeight: 0,
+              overflowY: "auto",
+            }}
+          >
             {screen === 'detail' && selectedPackage && (
               <PackageView
                 pack={selectedPackage}
