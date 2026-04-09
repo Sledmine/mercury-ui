@@ -1,5 +1,5 @@
 import React from "react"
-import { Card, Button, Tag, Tabs, Tab } from "@blueprintjs/core"
+import { Card, Button, Tag, Tabs, Tab, Divider } from "@blueprintjs/core"
 import { useDispatch, useSelector } from "react-redux"
 import {
   pushError,
@@ -58,6 +58,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
   }
 
   const image = pack.image || latestPackages.find((p) => p.name === pack.name)?.image
+  const backdropImage = pack.backdropImageUrl || latestPackages.find((p) => p.name === pack.name)?.backdropImageUrl
 
   const imageFiles = (pack.files || []).filter((f: any) => {
     return /\.(png|jpe?g|webp|gif)$/i.test(f.path)
@@ -97,7 +98,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
               backgroundSize: "cover",
               backgroundPosition: "center",
               boxShadow: "0 4px 12px rgba(0,0,0,0.6)",
-              border: "4px solid rgba(0,0,0,0.25)",
+              border: "1px solid rgba(100, 100, 100, 0.836)",
             }}
           />
           <div>
@@ -111,7 +112,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
         </div>
       </div>
 
-      <Card style={{ marginTop: 12 }}>
+      <Card style={{ marginTop: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h3 style={{ margin: 0 }}>{pack.description}</h3>
@@ -135,7 +136,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             )}
           </div>
         </div>
-
+        <Divider style={{ margin: "12px 0" }} />
         <div style={{ marginTop: 12 }}>
           <Tabs id="package-tabs">
             <Tab id="overview" title="Overview" panel={<div>{pack.description}</div>} />
@@ -145,7 +146,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
               panel={
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {image && (
-                    <img src={image} style={{ maxWidth: 320, borderRadius: 6 }} alt="backdrop" />
+                    <img src={backdropImage || image} style={{ maxWidth: 320, borderRadius: 6 }} alt="backdrop" />
                   )}
                   {imageFiles.map((f: any, idx: number) => (
                     <img key={idx} src={f.path} style={{ width: 180, borderRadius: 6 }} alt={`img-${idx}`} />
@@ -156,7 +157,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
             <Tab
               id="files"
               title={`Files (${(pack.files || []).length})`}
-              panel={<div><ul>{(pack.files || []).map((f: any, i: number)=>(<li key={i}>{f.path}</li>))}</ul></div>}
+              panel={<div><ul>{(pack.files || []).map((f: any, i: number) => (<li key={i}>{f.path}</li>))}</ul></div>}
             />
           </Tabs>
         </div>

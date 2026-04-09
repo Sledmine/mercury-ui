@@ -1,5 +1,7 @@
-interface MercuryPackage extends MercuryPackageManifest {
+interface MercuryPackage extends Omit<MercuryPackageManifest, 'files, manifestVersion'> {
   mirrors: string[]
+  versions: string[]
+  checksum: string,
 }
 
 export interface MercuryPackageManifest {
@@ -10,8 +12,10 @@ export interface MercuryPackageManifest {
   name: string
   label: string
   files: File[]
-  manifestVersion: string,
+  manifestVersion: string
   image?: string
+  backdropImageUrl?: string
+  changelog?: string
 }
 
 export interface MercuryFile {

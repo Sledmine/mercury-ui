@@ -78,7 +78,7 @@ export const NavBar = ({ showBack = false, onBack }: NavBarProps) => {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <NavbarGroup align="left">
             {showBack && (
-              <Button className={Classes.MINIMAL} icon="arrow-left" onClick={() => { if (onBack) onBack() }} text="Back" />
+              <Button className={Classes.MINIMAL} style={{marginRight: 6}} icon="arrow-left" onClick={() => { if (onBack) onBack() }} />
             )}
             <NavbarHeading>Mercury UI</NavbarHeading>
             <NavbarDivider />

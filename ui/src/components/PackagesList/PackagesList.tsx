@@ -140,8 +140,8 @@ export const PackagesList: React.FC<PackageListProps> = ({
                     <h4 style={{ margin: '6px 0' }}>{pack.version} • {pack.author}</h4>
                     <p style={{ marginTop: 6 }}>{pack.description}</p>
                     <div style={{ marginTop: 8 }}>
-                      {pack.mirrors && <Button icon="cloud-download" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
-                      {pack.files && isPackageUpdatable(pack) && <Button intent="primary" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
+                      {pack.mirrors && <Button icon="cloud-download" intent="primary" onClick={(ev) => { ev.stopPropagation(); install(pack.label) }}>Install</Button>}
+                      {pack.files && isPackageUpdatable(pack) && <Button intent="success" icon="refresh" onClick={(ev) => { ev.stopPropagation(); update(pack.label) }} style={{ marginLeft: 8 }}>Update</Button>}
                       {pack.files && <Button intent="danger" icon="delete" onClick={(ev) => { ev.stopPropagation(); remove(pack.label) }} style={{ marginLeft: 8 }}>Remove</Button>}
                     </div>
                   </div>
