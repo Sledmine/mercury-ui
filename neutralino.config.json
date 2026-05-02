@@ -1,7 +1,11 @@
 {
-  "applicationId": "js.neutralino.zero",
+  "applicationId": "com.mercury.ui",
+  "applicationName": "Mercury UI",
+  "applicationIcon": "ui/public/mercury-logo.png",
+  "description": "Mercury UI - Halo CE Package Manager",
+  "copyright": "2026 Insurrection Team",
   "version": "1.0.0",
-  "defaultMode": "chrome",
+  "defaultMode": "window",
   "documentRoot": "/ui/dist/",
   "url": "/",
   "port": 3000,
@@ -25,7 +29,7 @@
       "height": 510,
       "minWidth": 800,
       "minHeight": 510,
-      "icon": "/mercury-ui-react/public/mercury-logo.png",
+      "icon": "/ui/public/mercury-logo.png",
       "useSavedState": true
     }
   },
