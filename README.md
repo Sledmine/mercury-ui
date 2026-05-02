@@ -1,5 +1,5 @@
 # Mercury UI
-<img src="mercury-ui-react/public/mercury-logo.png" width="128" height="128" align="right" />
+<img src="ui/public/mercury-logo.png" width="128" height="128" align="right" />
 
 A simple UI for Mercury that uses React and Redux.
 
