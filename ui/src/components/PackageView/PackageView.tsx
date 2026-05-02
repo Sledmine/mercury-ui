@@ -142,8 +142,7 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
               backgroundImage: `url(${image})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.6)",
-              border: "1px solid rgba(100, 100, 100, 0.836)",
+              filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.6))"
             }}
           />
           <div>
@@ -170,74 +169,74 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
 
       <div className="pv-body-layout" style={{ marginTop: 12 }}>
         <Card className="pv-main-card" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-          <div>
-            <h3 style={{ margin: 0 }}>{pack.description}</h3>
-            <p style={{ color: currentTheme === "dark" ? "#cfd8e3" : "#444" }}>{pack.author}</p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+            <div>
+              <h3 style={{ margin: 0 }}>{pack.description}</h3>
+              <p style={{ color: currentTheme === "dark" ? "#cfd8e3" : "#444" }}>{pack.author}</p>
+            </div>
           </div>
-        </div>
-        <Divider style={{ margin: "12px 0" }} />
-        <div style={{ marginTop: 12 }}>
-          <Tabs id="package-tabs">
-            <Tab id="overview" title="Overview" panel={<div>{pack.description}</div>} />
-            <Tab
-              id="images"
-              title={`Images (${imageFiles.length + (image ? 1 : 0)})`}
-              panel={
-                <div className="pv-images-grid">
-                  {image && (
-                    <div className="pv-image-card pv-image-card-cover">
-                      <img src={backdropImage || image} alt="backdrop" />
-                      <div className="pv-image-overlay">Cover</div>
-                    </div>
-                  )}
-                  {imageFiles.map((f: any, idx: number) => (
-                    <div key={idx} className="pv-image-card">
-                      <img src={f.path} alt={`img-${idx}`} />
-                      <div className="pv-image-overlay">{fileNameFromPath(f.path)}</div>
-                    </div>
-                  ))}
-                </div>
-              }
-            />
-            <Tab
-              id="files"
-              title={`Files (${files.length})`}
-              panel={
-                <div className="pv-files-list">
-                  {files.map((f: any, i: number) => (
-                    <div key={i} className="pv-file-row">
-                      <div className="pv-file-main">
-                        <span className={`bp6-icon bp6-icon-${fileIconFromPath(f.path)} pv-file-icon`} />
-                        <div>
-                          <div className="pv-file-name">{fileNameFromPath(f.path)}</div>
-                          <div className="pv-file-meta">{f.path}</div>
-                        </div>
+          <Divider style={{ margin: "12px 0" }} />
+          <div style={{ marginTop: 12 }}>
+            <Tabs id="package-tabs">
+              <Tab id="overview" title="Overview" panel={<div>{pack.description}</div>} />
+              <Tab
+                id="images"
+                title={`Images (${imageFiles.length + (image ? 1 : 0)})`}
+                panel={
+                  <div className="pv-images-grid">
+                    {image && (
+                      <div className="pv-image-card pv-image-card-cover">
+                        <img src={backdropImage || image} alt="backdrop" />
+                        <div className="pv-image-overlay">Cover</div>
                       </div>
-                      <div className="pv-file-side">{f.type || "file"}</div>
-                    </div>
-                  ))}
-                </div>
-              }
-            />
-            <Tab
-              id="changelog"
-              title="CHANGELOG"
-              panel={
-                <div
-                  className="package-changelog-markdown"
-                  style={{
-                    color: currentTheme === "dark" ? "#d7dee7" : "#2b2b2b",
-                    lineHeight: 1.5,
-                    padding: "6px 8px",
-                    borderRadius: 8,
-                    background: currentTheme === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)",
-                  }}
-                >
+                    )}
+                    {imageFiles.map((f: any, idx: number) => (
+                      <div key={idx} className="pv-image-card">
+                        <img src={f.path} alt={`img-${idx}`} />
+                        <div className="pv-image-overlay">{fileNameFromPath(f.path)}</div>
+                      </div>
+                    ))}
+                  </div>
+                }
+              />
+              {files.length > 0 && (<Tab
+                id="files"
+                title={`Files (${files.length})`}
+                panel={
+                  <div className="pv-files-list">
+                    {files.map((f: any, i: number) => (
+                      <div key={i} className="pv-file-row">
+                        <div className="pv-file-main">
+                          <span className={`bp6-icon bp6-icon-${fileIconFromPath(f.path)} pv-file-icon`} />
+                          <div>
+                            <div className="pv-file-name">{fileNameFromPath(f.path)}</div>
+                            <div className="pv-file-meta">{f.path}</div>
+                          </div>
+                        </div>
+                        <div className="pv-file-side">{f.type || "file"}</div>
+                      </div>
+                    ))}
+                  </div>
+                }
+              />)}
+              <Tab
+                id="changelog"
+                title="CHANGELOG"
+                panel={
                   <div
-                    dangerouslySetInnerHTML={{ __html: renderChangelogHtml(changelog) }}
-                  />
-                  <style>{`
+                    className="package-changelog-markdown"
+                    style={{
+                      color: currentTheme === "dark" ? "#d7dee7" : "#2b2b2b",
+                      lineHeight: 1.5,
+                      padding: "6px 8px",
+                      borderRadius: 8,
+                      background: currentTheme === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)",
+                    }}
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{ __html: renderChangelogHtml(changelog) }}
+                    />
+                    <style>{`
                     .package-changelog-markdown h1,
                     .package-changelog-markdown h2,
                     .package-changelog-markdown h3,
@@ -284,11 +283,11 @@ const PackageView: React.FC<PackageViewProps> = ({ pack, triggerUpdate, onBack }
                       padding: 0;
                     }
                   `}</style>
-                </div>
-              }
-            />
-          </Tabs>
-        </div>
+                  </div>
+                }
+              />
+            </Tabs>
+          </div>
         </Card>
         <Card className="pv-side-card" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
           <div className="pv-side-row">

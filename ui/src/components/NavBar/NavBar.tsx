@@ -74,7 +74,7 @@ export const NavBar = ({ showBack = false, onBack, onOpenSettings }: NavBarProps
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <NavbarGroup align="left">
             {showBack && (
-              <Button className={Classes.MINIMAL} style={{marginRight: 6}} icon="arrow-left" onClick={() => { if (onBack) onBack() }} />
+              <Button className={Classes.MINIMAL} style={{ marginRight: 6 }} icon="arrow-left" onClick={() => { if (onBack) onBack() }} />
             )}
             <NavbarHeading>Mercury UI</NavbarHeading>
             <NavbarDivider />
@@ -89,16 +89,16 @@ export const NavBar = ({ showBack = false, onBack, onOpenSettings }: NavBarProps
           </div>
         </div>
 
-        <NavbarGroup align="right">
+        <NavbarGroup align="right" style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Button
             //className={Classes.MINIMAL}
             large
-            onClick={insertDialog}
             icon="plus"
+            onClick={insertDialog}
             text="Insert"
           />
           <Button
-            className={Classes.MINIMAL}
+            large
             icon="cog"
             onClick={() => onOpenSettings && onOpenSettings()}
             text="Settings"
